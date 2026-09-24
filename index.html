@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sai Praneeth Nagamalli</title>
+  <meta name="description" content="Sai Praneeth Nagamalli — Mobile Application Developer and Operations (Flutter, Laravel) in Hyderabad, India. Mobile apps, backend debugging, APIs and production support." />
+  <meta property="og:title" content="Sai Praneeth Nagamalli — Mobile Application Developer and Operations" />
+  <meta property="og:description" content="Flutter & Laravel developer shipping mobile apps in production." />
+  <meta property="og:image" content="assets/photos/me-camera.jpg" />
+  <meta name="theme-color" content="#0b0b0c" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ───────── NAV ───────── -->
+  <header class="nav" id="nav">
+    <a href="#top" class="nav__logo" aria-label="Home">SP<span>.</span></a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#about">About</a>
+      <a href="#work">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#gallery">Photography</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a href="assets/Sai_Praneeth_Resume.pdf" class="btn btn--small" download>Resume ↓</a>
+  </header>
+
+  <main id="top">
+    <!-- ───────── HERO ───────── -->
+    <section class="hero" id="hero">
+      <div class="hero__bg" aria-hidden="true"></div>
+
+      <div class="hero__content">
+        <p class="eyebrow"><span class="dot"></span> Open to new opportunities · Hyderabad, IN</p>
+        <p class="hero__role">Mobile Application Developer and Operations</p>
+        <h1 class="hero__title">
+          <span class="line"><span>Sai Praneeth</span></span>
+          <span class="line"><span><em>Nagamalli</em></span></span>
+        </h1>
+        <p class="hero__lede">
+          I work on <strong>Flutter</strong> apps for Android & iOS and help debug the <strong>Laravel</strong> backend of a live
+          ride-hailing platform — learning something new with every bug I fix.
+        </p>
+        <p class="hero__stacklabel">Working with</p>
+        <ul class="hero__stack" aria-label="Technologies I work with">
+          <li>Flutter</li><li>Laravel</li><li>Git</li>
+        </ul>
+        <div class="hero__cta">
+          <a href="#projects" class="btn">View projects</a>
+          <a href="#work" class="btn btn--ghost">Experience</a>
+        </div>
+      </div>
+
+      <div class="hero__visual" aria-hidden="true">
+        <div class="window window--hero">
+          <div class="window__bar"><i></i><i></i><i></i><span>face_search/match.py</span></div>
+<pre class="code"><code><span class="k">import</span> <span class="v">numpy</span> <span class="k">as</span> <span class="v">np</span>
+
+<span class="k">def</span> <span class="f">find_matches</span>(<span class="v">selfie</span>, <span class="v">faces</span>, <span class="v">threshold</span>=<span class="t">0.5</span>):
+    <span class="c">"""Return indexes of faces that look like the selfie."""</span>
+    <span class="v">selfie</span> = <span class="v">selfie</span> / <span class="v">np</span>.<span class="v">linalg</span>.<span class="f">norm</span>(<span class="v">selfie</span>)
+    <span class="v">faces</span> = <span class="v">faces</span> / <span class="v">np</span>.<span class="v">linalg</span>.<span class="f">norm</span>(<span class="v">faces</span>, <span class="v">axis</span>=<span class="t">1</span>, <span class="v">keepdims</span>=<span class="k">True</span>)
+    <span class="v">scores</span> = <span class="v">faces</span> @ <span class="v">selfie</span>
+    <span class="k">return</span> [<span class="v">i</span> <span class="k">for</span> <span class="v">i</span>, <span class="v">score</span> <span class="k">in</span> <span class="f">enumerate</span>(<span class="v">scores</span>)
+            <span class="k">if</span> <span class="v">score</span> &gt;= <span class="v">threshold</span>]</code></pre>
+          <div class="window__term">
+            <span class="term__prompt">$</span> <span id="typed"></span><span class="caret"></span>
+          </div>
+        </div>
+
+        <figure class="polaroid">
+          <img src="assets/photos/me-camera.jpg" alt="" />
+          <figcaption>off-duty: photographer 📷</figcaption>
+        </figure>
+      </div>
+
+      <a href="#about" class="hero__scroll" aria-label="Scroll down">scroll <span>↓</span></a>
+    </section>
+
+    <!-- ───────── MARQUEE ───────── -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>Flutter</span><b>✦</b><span>Laravel</span><b>✦</b><span class="alt">Always learning</span><b>✦</b><span>Python</span><b>✦</b><span>MariaDB</span><b>✦</b><span>Firebase</span><b>✦</b><span class="alt">Android & iOS</span><b>✦</b><span>GitHub</span><b>✦</b>
+        <span>Flutter</span><b>✦</b><span>Laravel</span><b>✦</b><span class="alt">Always learning</span><b>✦</b><span>Python</span><b>✦</b><span>MariaDB</span><b>✦</b><span>Firebase</span><b>✦</b><span class="alt">Android & iOS</span><b>✦</b><span>GitHub</span><b>✦</b>
+      </div>
+    </div>
+
+    <!-- ───────── ABOUT ───────── -->
+    <section class="section about" id="about">
+      <div class="section__label"><span>01</span> About</div>
+      <div class="about__grid">
+        <figure class="about__photo reveal">
+          <img src="assets/photos/desk.jpg" alt="A MacBook and a DSLR side by side on a desk" loading="lazy" />
+          <figcaption>Where the work happens.</figcaption>
+        </figure>
+        <div class="about__text">
+          <h2 class="h2 reveal">I build apps and fix what breaks <em>in production.</em></h2>
+          <p class="reveal">
+            I'm a Mobile Application Developer and Operations team member at <strong>Zippintella (Zippi)</strong>, a ride-hailing startup in Hyderabad.
+            On the development side, I work on our <strong>Flutter</strong> apps for Android and iOS, help debug <strong>Laravel</strong> services,
+            job queues and database issues, and manage the GitHub repositories across our mobile codebases. On the operations side, I verify
+            driver-partner documents during onboarding, including driving licences, Aadhaar, vehicle RC, and background checks.
+          </p>
+          <p class="reveal">
+            I'm early in my developer journey, and most of my learning comes from real production problems: working with a cross-functional
+            team to trace an issue from the app to the backend and the database until it's fixed. I also set up and maintain the
+            <strong>Telegram ride-alert automation</strong> our operations team relies on.
+          </p>
+          <p class="reveal">
+            I started out in digital marketing (SEO, analytics, WordPress, email campaigns), so I think about what happens after a feature ships.
+            People have to find it, use it and trust it. Outside work, I'm a photographer, which trained my eye for detail and good UI.
+          </p>
+          <div class="stats reveal">
+            <div><strong data-count="2">0</strong><span>apps built: ride-hailing<br/>and school bus transportation</span></div>
+            <div><strong data-count="4">0</strong><span>roles across tech,<br/>operations & growth teams</span></div>
+            <div><strong data-count="40" data-suffix="%">0</strong><span>avg. open rate on<br/>B2B email campaigns</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── EXPERIENCE ───────── -->
+    <section class="section work" id="work">
+      <div class="section__label"><span>02</span> Experience</div>
+      <h2 class="h2 reveal">Where I've <em>worked</em></h2>
+
+      <ol class="frames">
+        <li class="frame frame--main reveal">
+          <div class="frame__num">01</div>
+          <div class="frame__meta"><span class="tag tag--live">Current</span> Jun 2026 — Present</div>
+          <h3>Mobile Application Developer and Operations</h3>
+          <p class="frame__org">Zippintella Pvt. Ltd. · Hyderabad</p>
+          <ul>
+            <li>Develop and maintain <b>Flutter</b> mobile applications for <b>Android and iOS</b>.</li>
+            <li>Help debug <b>Laravel</b> backend services, job queues and database-related issues (MariaDB / MySQL).</li>
+            <li>Manage <b>GitHub</b> repositories across multiple mobile application codebases.</li>
+            <li>Configure and maintain <b>Telegram ride-alert automation</b> for operational notifications.</li>
+            <li>Collaborate with cross-functional teams to troubleshoot production issues and improve app stability.</li>
+            <li>Verify driver-partner (Shero) documents during onboarding, including driving licence, Aadhaar, vehicle RC, and background checks.</li>
+            <li>Handle customer and Shero onboarding, lead follow-ups, and issue resolution.</li>
+            <li>Convert qualified leads into Sheros through structured follow-ups and onboarding support.</li>
+          </ul>
+        </li>
+        <li class="frame reveal">
+          <div class="frame__num">02</div>
+          <div class="frame__meta">Feb 2026 — Jun 2026</div>
+          <h3>Operations & Community Engagement Intern</h3>
+          <p class="frame__org">Zippintella Pvt. Ltd.</p>
+          <ul>
+            <li>Verified driver-partner (Shero) documents during onboarding, including driving licence, Aadhaar, vehicle RC, and background checks.</li>
+            <li>Managed social media campaigns and content strategy for the Zippi platform.</li>
+            <li>Created promotional videos and marketing creatives.</li>
+            <li>Supported SEO, website updates and community engagement.</li>
+          </ul>
+        </li>
+        <li class="frame reveal">
+          <div class="frame__num">03</div>
+          <div class="frame__meta">2025 — 2026</div>
+          <h3>Digital Marketing Freelancer</h3>
+          <p class="frame__org">CloudQA</p>
+          <ul>
+            <li>Ran B2B email campaigns on SendGrid averaging <b>~40% open rates</b>.</li>
+            <li>Optimised WordPress landing pages; managed Google Search Console.</li>
+            <li>Marketing analytics and funnel analysis to improve lead quality.</li>
+          </ul>
+        </li>
+        <li class="frame reveal">
+          <div class="frame__num">04</div>
+          <div class="frame__meta">2023 — 2024</div>
+          <h3>Digital Marketing Intern</h3>
+          <p class="frame__org">Prophecius Technologies</p>
+          <ul>
+            <li>Supported lead-generation campaigns.</li>
+            <li>Keyword research and website content on WordPress.</li>
+          </ul>
+        </li>
+      </ol>
+
+      <div class="edu reveal">
+        <div>
+          <span class="mono">Education</span>
+          <p><b>B.Tech, Electrical & Electronics Engineering</b><br/>Anurag University · 2020–2024</p>
+        </div>
+        <div>
+          <span class="mono">Certifications</span>
+          <p>Python Programming — GUVI (Google)<br/>Data Structures — Verzo<br/>Java Programming — Skill Vertex</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── PROJECTS ───────── -->
+    <section class="section projects" id="projects">
+      <div class="section__label"><span>03</span> Projects</div>
+      <h2 class="h2 reveal">Things I've <em>built</em></h2>
+
+      <div class="cards">
+        <article class="card card--feature reveal">
+          <div class="card__visual card__visual--face">
+            <img src="assets/photos/stage.jpg" alt="" loading="lazy" />
+            <span class="facebox facebox--1"><i>match 0.94</i></span>
+            <span class="scanline"></span>
+          </div>
+          <div class="card__body">
+            <span class="mono">01 · AI · Backend · In progress</span>
+            <h3>Event Photo Face-Search Platform</h3>
+            <p>
+              A multi-tenant SaaS backend for event photography studios. Studios bulk-upload event photos; an AI pipeline
+              detects faces, creates embeddings and indexes them — so guests can find every photo they appear in just by taking a selfie.
+            </p>
+            <ul class="bullets">
+              <li>OTP authentication, studio & event CRUD, bulk photo upload to S3</li>
+              <li>Detect → embed → index pipeline with InsightFace and FAISS vector search</li>
+              <li>Reads iPhone HEIC and camera RAW files; async PostgreSQL with Alembic migrations</li>
+            </ul>
+            <ul class="chips">
+              <li>Python</li><li>FastAPI</li><li>PostgreSQL</li><li>SQLAlchemy</li><li>InsightFace</li><li>FAISS</li><li>ONNX Runtime</li><li>AWS S3</li><li>pytest</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card reveal">
+          <div class="card__visual card__visual--phone">
+            <div class="phone">
+              <div class="phone__notch"></div>
+              <div class="phone__map">
+                <span class="pin pin--a"></span><span class="pin pin--b"></span>
+                <svg viewBox="0 0 100 160" preserveAspectRatio="none"><path d="M22 128 C 30 90, 70 100, 62 60 S 78 30, 76 26" /></svg>
+              </div>
+              <div class="phone__sheet">
+                <b>Ride confirmed</b>
+                <span>Driver arriving · 3 min</span>
+              </div>
+            </div>
+          </div>
+          <div class="card__body">
+            <span class="mono">02 · Mobile · In production</span>
+            <h3>Zippi Ride-Hailing Apps</h3>
+            <p>Flutter development, Laravel backend debugging, repository management and production
+              issue resolution for Zippi's live ride-hailing apps on Android and iOS.</p>
+            <ul class="chips"><li>Flutter</li><li>Laravel</li><li>MariaDB</li><li>Firebase</li></ul>
+          </div>
+        </article>
+
+        <article class="card reveal">
+          <div class="card__visual card__visual--phone">
+            <div class="phone">
+              <div class="phone__notch"></div>
+              <div class="phone__map">
+                <span class="pin pin--a" style="left: 14%; top: 18%;"></span><span class="pin pin--b" style="left: 70%; top: 76%;"></span>
+                <svg viewBox="0 0 100 160" preserveAspectRatio="none"><path d="M20 30 C 44 40, 26 80, 52 92 S 80 110, 76 126" /></svg>
+              </div>
+              <div class="phone__sheet">
+                <b>🚌 Bus on route</b>
+                <span>Next stop · 5 min</span>
+              </div>
+            </div>
+          </div>
+          <div class="card__body">
+            <span class="mono">03 · Mobile · In deployment</span>
+            <h3>School Bus Transportation App</h3>
+            <p>Built a school bus transportation app, implementing application workflows and backend integrations.</p>
+            <ul class="chips"><li>Flutter</li></ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ───────── SKILLS ───────── -->
+    <section class="section skills" id="skills">
+      <div class="section__label"><span>04</span> Skills</div>
+      <h2 class="h2 reveal">What I <em>work with</em></h2>
+      <p class="skills__note reveal">Hands-on experience from my job and projects. I'm still early in my career — these are tools I use and am actively getting better at, not claims of mastery.</p>
+      <div class="skillgrid">
+        <div class="skill reveal">
+          <span class="skill__icon">📱</span>
+          <h3>Mobile</h3>
+          <ul><li>Flutter</li><li>Android Studio</li><li>Android & iOS builds</li></ul>
+        </div>
+        <div class="skill reveal">
+          <span class="skill__icon">⚙️</span>
+          <h3>Backend</h3>
+          <ul><li>Laravel (PHP)</li><li>Job queues</li><li>FastAPI (Python)</li></ul>
+        </div>
+        <div class="skill reveal">
+          <span class="skill__icon">🗄️</span>
+          <h3>Databases</h3>
+          <ul><li>MariaDB</li><li>PostgreSQL</li></ul>
+        </div>
+        <div class="skill reveal">
+          <span class="skill__icon">🛠️</span>
+          <h3>Tools & DevOps</h3>
+          <ul><li>Git & GitHub</li><li>Postman</li><li>VS Code</li></ul>
+        </div>
+        <div class="skill reveal">
+          <span class="skill__icon">💻</span>
+          <h3>Languages</h3>
+          <ul><li>PHP</li><li>Java (basics)</li></ul>
+        </div>
+        <div class="skill reveal">
+          <span class="skill__icon">📈</span>
+          <h3>Web & Growth</h3>
+          <ul><li>WordPress / Elementor</li><li>SEO & Search Console</li><li>Google Analytics</li><li>SendGrid</li></ul>
+        </div>
+      </div>
+      <div class="skills__familiar reveal">
+        <h3>Familiar with</h3>
+        <ul><li>Python</li><li>MySQL</li><li>Firebase</li></ul>
+      </div>
+    </section>
+
+    <!-- ───────── PHOTOGRAPHY ───────── -->
+    <section class="section gallery" id="gallery">
+      <div class="section__label"><span>05</span> Beyond code</div>
+      <div class="gallery__intro">
+        <h2 class="h2 reveal">I'm also a <em>photographer</em></h2>
+        <p class="reveal">
+          I've been shooting since 2019 under the name <strong>Pixel Photography</strong>. I was Publication Head of the
+          Click Cadets photography club at Anurag University, led the <strong>Daksha 2K23</strong> photography team, and was
+          runner-up in an inter-college photography competition. Photography taught me patience, composition and attention
+          to detail — all things I bring to building apps.
+        </p>
+      </div>
+
+      <div class="masonry" id="masonry">
+        <figure><img src="assets/photos/potter-vase.jpg" alt="Potter shaping a tall ribbed vase on the wheel" loading="lazy" /><figcaption>Shaped by hand · <i>documentary</i></figcaption></figure>
+        <figure><img src="assets/photos/elder.jpg" alt="Elderly man in an orange turban and knit sweater" loading="lazy" /><figcaption>Quiet dignity · <i>portrait</i></figcaption></figure>
+        <figure><img src="assets/photos/egret.jpg" alt="White egret among water hyacinth" loading="lazy" /><figcaption>Stillness · <i>wildlife</i></figcaption></figure>
+        <figure><img src="assets/photos/dancer.jpg" alt="Classical dancer mid-pose on stage" loading="lazy" /><figcaption>Mid-mudra · <i>events</i></figcaption></figure>
+        <figure><img src="assets/photos/tiny-hand.jpg" alt="Black and white close-up of a baby's hand" loading="lazy" /><figcaption>First grip · <i>fine art</i></figcaption></figure>
+        <figure><img src="assets/photos/hanuman.jpg" alt="Tall Hanuman statue framed by palm trees" loading="lazy" /><figcaption>Looking up · <i>travel</i></figcaption></figure>
+      </div>
+      <a class="gallery__more" href="https://www.instagram.com/pixel_with_praneeth/" target="_blank" rel="noopener noreferrer"><svg class="gallery__ig" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor"/></svg>See more of my work on Instagram <span>→</span></a>
+    </section>
+
+    <!-- ───────── CONTACT ───────── -->
+    <section class="contact" id="contact">
+      <p class="eyebrow"><span class="dot"></span> Open to Flutter / Mobile / Backend roles</p>
+      <h2 class="contact__title">Let's build something<br/><em>great together.</em></h2>
+      <a class="contact__mail" href="mailto:saipraneeth.nagamalli21@gmail.com">saipraneeth.nagamalli21@gmail.com <span>→</span></a>
+      <div class="socials">
+        <a href="https://www.linkedin.com/in/nagamalli-saipraneeth-42755b255/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="assets/Sai_Praneeth_Resume.pdf" download>Résumé (PDF)</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© <span id="year"></span> Sai Praneeth Nagamalli</span>
+    <span class="mono">Hand-coded in HTML, CSS & JavaScript</span>
+  </footer>
+
+  <!-- lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Photo viewer">
+    <button class="lightbox__close" aria-label="Close">✕</button>
+    <button class="lightbox__nav lightbox__nav--prev" aria-label="Previous">←</button>
+    <figure><img alt="" /><figcaption></figcaption></figure>
+    <button class="lightbox__nav lightbox__nav--next" aria-label="Next">→</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
