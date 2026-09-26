@@ -1,0 +1,21 @@
+# CD: Netlify builds every push to main (production) and every pull request (deploy preview).
+# The "build" is just our checks — if they fail, Netlify stops and the live site is left untouched.
+[build]
+  publish = "."
+  command = "node scripts/check.mjs"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# long cache for photos, short for the page and code so updates show up immediately
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "DENY"

@@ -1,0 +1,39 @@
+# CI: runs on every push to main and on every pull request.
+# Netlify (CD) deploys main separately and re-runs scripts/check.mjs before publishing.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Site checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: JS syntax, local files, page basics
+        run: node scripts/check.mjs
+      - name: HTML validation
+        run: npx --yes html-validate@8 index.html
+
+  lighthouse:
+    name: Lighthouse audit
+    needs: checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit performance, accessibility, best practices and SEO
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
