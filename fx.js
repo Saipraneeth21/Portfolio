@@ -267,22 +267,26 @@
     },
   });
 
-  // experience: cards are "dealt" onto the deck as they scroll in — rising from below with a
-  // slight tilt while the card above dips back. Nothing is pinned, so the layout can never
-  // drift: every card always ends in its normal place, fully visible.
+  // experience: while scrolling, cards stack like a deck; at the end the deck spreads
+  // back out into the full list so every card stays visible afterwards (tablet/desktop)
   const stack = document.querySelector('.stack');
   const cards = [...stack.querySelectorAll('.stack__card')];
-  stack.style.perspective = '1400px';
-  cards.forEach((card, i) => {
-    gsap.fromTo(card,
-      { y: 140, rotateX: 14, scale: 0.94, transformOrigin: '50% 0%' },
-      { y: 0, rotateX: 0, scale: 1, ease: 'power2.out',
-        scrollTrigger: { trigger: card, start: 'top 98%', end: 'top 60%', scrub: 0.5 } });
-    if (i === 0) return;
-    gsap.fromTo(cards[i - 1], { '--dip': 0 }, {
-      '--dip': 1, ease: 'none',
-      scrollTrigger: { trigger: card, start: 'top 98%', end: 'top 60%', scrub: 0.5 },
+  gsap.matchMedia().add('(min-width: 761px)', () => {
+    const top = (c) => c.offsetTop - cards[0].offsetTop;          // natural position in the list
+    const stacked = (c, i) => -top(c) + i * 24;                    // position when stacked on card 1
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: stack, start: 'top 90px', end: () => '+=' + innerHeight * (cards.length * 0.75),
+        pin: true, scrub: 0.6, invalidateOnRefresh: true, anticipatePin: 1,
+      },
     });
+    cards.forEach((card, i) => {
+      if (i === 0) return;
+      tl.fromTo(card, { y: () => stacked(card, i) + innerHeight }, { y: () => stacked(card, i), ease: 'power2.out', duration: 1 }, i - 1);
+      tl.to(cards.slice(0, i), { scale: (k) => 1 - (i - k) * 0.035, transformOrigin: '50% 0%', ease: 'none', duration: 1 }, i - 1);
+    });
+    tl.to(cards, { y: 0, scale: 1, ease: 'power2.inOut', duration: 1.4, stagger: 0.08 }, '+=0.35');
+    return () => gsap.set(cards, { clearProps: 'transform' });
   });
 
   // case files: pinned, slide sideways while scrolling down (desktop only)
@@ -346,6 +350,19 @@
   });
 
   afterLoader(() => ScrollTrigger.refresh());
+
+  // Re-measure every scroll scene whenever the page height changes (lazy photos loading,
+  // fonts swapping, the loader finishing). Stale measurements are what made pinned
+  // sections land in the wrong place. The height check stops refresh → resize loops.
+  let settledHeight = 0, reTimer;
+  ScrollTrigger.addEventListener('refresh', () => { settledHeight = document.documentElement.scrollHeight; });
+  new ResizeObserver(() => {
+    clearTimeout(reTimer);
+    reTimer = setTimeout(() => {
+      if (Math.abs(document.documentElement.scrollHeight - settledHeight) > 2) ScrollTrigger.refresh();
+    }, 150);
+  }).observe(document.body);
+  document.querySelectorAll('img').forEach((img) => { if (!img.complete) img.addEventListener('load', () => ScrollTrigger.refresh(), { once: true }); });
   if (document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
   addEventListener('load', () => ScrollTrigger.refresh());
 })();
