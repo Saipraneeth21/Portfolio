@@ -80,6 +80,7 @@
   const bubble = document.getElementById('doodleBubble');
   const camera = doodle.querySelector('.doodle__camera');
   let bubbleTimer, idleTimer, asleep = false;
+  let clearSnaps = () => {};   // set below, once the polaroid code exists
 
   // falls asleep once you scroll past the home screen, wakes up when you come back
   const sleepCheck = () => {
@@ -89,6 +90,7 @@
     doodle.classList.toggle('is-asleep', asleep);
     if (asleep) {
       bubble.classList.remove('is-on');
+      clearSnaps();
       clearTimeout(idleTimer);
     } else {
       replay(doodle, 'is-waking');
@@ -114,7 +116,13 @@
   sleepCheck(); // already scrolled down on load (e.g. after a refresh) → start asleep
 
   // camera: flash, "say cheese", and print a polaroid of a real photo from the gallery
-  const photos = [...document.querySelectorAll('.plate img')].map((img) => ({ src: img.currentSrc || img.src, alt: img.alt }));
+  // polaroids use small copies (assets/photos/thumbs) preloaded right after the intro, so they appear instantly
+  const photos = [...document.querySelectorAll('.plate img')].map((img) => {
+    const src = img.getAttribute('src');
+    return { thumb: src.replace('assets/photos/', 'assets/photos/thumbs/'), alt: img.alt };
+  });
+  const preloaded = [];
+  afterLoader(() => photos.forEach((p) => { const i = new Image(); i.src = p.thumb; preloaded.push(i); }));
   const snaps = [];
   // shuffle-bag: every photo appears once before any repeats, and never twice in a row
   let bag = [], lastShown = null;
@@ -133,9 +141,10 @@
     const r = camera.getBoundingClientRect();
     const el = document.createElement('figure');
     el.className = 'snap';
-    el.innerHTML = `<img src="${pick.src}" alt="${pick.alt}"><span>Pixel with Praneeth</span>`;
-    el.style.left = `${r.left + r.width / 2 - 75}px`;
-    el.style.top = `${r.top}px`;
+    el.innerHTML = `<img src="${pick.thumb}" alt="${pick.alt}"><span>Pixel with Praneeth</span>`;
+    // page coordinates (not the window), so polaroids scroll away with the home screen
+    el.style.left = `${r.left + scrollX + r.width / 2 - 75}px`;
+    el.style.top = `${r.top + scrollY}px`;
     document.body.appendChild(el);
     const dx = -(160 + Math.random() * Math.min(innerWidth * 0.35, 420));
     const dy = -(80 + Math.random() * 180);
@@ -152,6 +161,9 @@
     snaps.push(el);
     if (snaps.length > 4) { const old = snaps.shift(); old.classList.add('is-gone'); setTimeout(() => old.remove(), 600); }
     setTimeout(() => { el.classList.add('is-gone'); setTimeout(() => { el.remove(); const i = snaps.indexOf(el); if (i > -1) snaps.splice(i, 1); }, 600); }, 6000);
+  };
+  clearSnaps = () => {
+    snaps.splice(0).forEach((el) => { el.classList.add('is-gone'); setTimeout(() => el.remove(), 600); });
   };
   const flash = (print) => {
     replay(doodle, 'is-flash');

@@ -115,7 +115,7 @@ html.lenis, html.lenis body { height: auto; }
 @keyframes pop { 0% { transform: scaleY(.1); } 60% { transform: scale(1.2); } 100% { transform: none; } }
 
 /* polaroids the camera "prints" */
-.snap { position: fixed; z-index: 60; width: 150px; padding: 8px 8px 26px; background: #fff; box-shadow: 0 18px 40px -12px rgba(0,0,0,.45); cursor: pointer; transition: opacity .6s; }
+.snap { position: absolute; z-index: 40; width: 150px; padding: 8px 8px 26px; background: #fff; box-shadow: 0 18px 40px -12px rgba(0,0,0,.45); cursor: pointer; transition: opacity .6s; }
 .snap img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
 .snap span { position: absolute; left: 0; right: 0; bottom: 6px; text-align: center; font: 500 10px var(--mono); color: #555; letter-spacing: .06em; }
 .snap.is-gone { opacity: 0; }
