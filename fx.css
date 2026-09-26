@@ -138,9 +138,9 @@ html.lenis, html.lenis body { height: auto; }
 .fx .statement__text .sw { opacity: .14; transition: opacity .15s linear; }
 .statement__text .sw:nth-last-child(-n+4) { color: var(--accent); }
 
-/* ───────── experience: stack as a deck while scrolling, then spread out into the full list ───────── */
+/* ───────── experience: cards are dealt onto the deck as they scroll in (no pinning) ───────── */
 .stack { display: flex; flex-direction: column; gap: 24px; }
-.stack__card { position: relative; box-shadow: 0 -16px 40px -30px rgba(0,0,0,.35); }
+.stack__card { position: relative; box-shadow: 0 -16px 40px -30px rgba(0,0,0,.35); filter: brightness(calc(1 - var(--dip, 0) * .06)); scale: calc(1 - var(--dip, 0) * .015); }
 /* GSAP moves the cards; keep the reveal fade but not a competing transform transition */
 .fx .stack__card.rise { transition: opacity .9s var(--ease) !important; }
 .stack .brief { background: var(--card); border: 1px solid var(--rule); padding: clamp(22px, 3vw, 40px); display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); column-gap: clamp(20px, 3vw, 44px); }
