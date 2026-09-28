@@ -265,6 +265,12 @@
   if (!hasGsap) return;
   const { gsap, ScrollTrigger } = window;
   gsap.registerPlugin(ScrollTrigger);
+  // iPad/phone browsers resize the viewport while their address bar slides in and out;
+  // don't re-measure every scene for that, it's what threw pinned sections off on iPad
+  ScrollTrigger.config({ ignoreMobileResize: true });
+  // pinned scenes only where they're reliable: wide screens driven by a mouse or trackpad
+  const PIN_OK = '(min-width: 1025px) and (hover: hover) and (pointer: fine)';
+  const NO_PIN = '(max-width: 1024px), (hover: none), (pointer: coarse)';
 
   // statement: words light up as it scrolls through
   const stmt = document.getElementById('statement');
@@ -279,11 +285,12 @@
     },
   });
 
-  // experience: while scrolling, cards stack like a deck; at the end the deck spreads
-  // back out into the full list so every card stays visible afterwards (tablet/desktop)
+  // experience (laptop/desktop): while scrolling, cards stack like a deck; at the end the
+  // deck spreads back out into the full list so every card stays visible afterwards
   const stack = document.querySelector('.stack');
   const cards = [...stack.querySelectorAll('.stack__card')];
-  gsap.matchMedia().add('(min-width: 761px)', () => {
+  const expMM = gsap.matchMedia();
+  expMM.add(PIN_OK, () => {
     const top = (c) => c.offsetTop - cards[0].offsetTop;          // natural position in the list
     const stacked = (c, i) => -top(c) + i * 24;                    // position when stacked on card 1
     const tl = gsap.timeline({
@@ -300,6 +307,23 @@
     tl.to(cards, { y: 0, scale: 1, ease: 'power2.inOut', duration: 1.4, stagger: 0.08 }, '+=0.35');
     return () => gsap.set(cards, { clearProps: 'transform' });
   });
+  // experience (iPad, tablets, phones): nothing pinned — each card is "dealt" onto the deck as it
+  // scrolls in, rising with a slight tilt while the card above dips back
+  expMM.add(NO_PIN, () => {
+    stack.style.perspective = '1400px';
+    const tweens = [];
+    cards.forEach((card, i) => {
+      tweens.push(gsap.fromTo(card,
+        { y: 110, rotateX: 12, scale: 0.95, transformOrigin: '50% 0%' },
+        { y: 0, rotateX: 0, scale: 1, ease: 'power2.out',
+          scrollTrigger: { trigger: card, start: 'top 98%', end: 'top 62%', scrub: 0.5 } }));
+      if (i > 0) {
+        tweens.push(gsap.fromTo(cards[i - 1], { '--dip': 0 }, { '--dip': 1, ease: 'none',
+          scrollTrigger: { trigger: card, start: 'top 98%', end: 'top 62%', scrub: 0.5 } }));
+      }
+    });
+    return () => { tweens.forEach((t) => t.kill()); gsap.set(cards, { clearProps: 'transform' }); stack.style.perspective = ''; };
+  });
 
   // case files: pinned, slide sideways while scrolling down (desktop only)
   const cases = document.getElementById('cases');
@@ -312,7 +336,7 @@
   const counter = progress.querySelector('#casesCount');
   const total = track.children.length;
   const mm = gsap.matchMedia();
-  mm.add('(min-width: 961px)', () => {
+  mm.add(PIN_OK, () => {
     root.classList.add('fx-pin');
     // how far the track must travel so the last card ends fully in view
     const distance = () => {
