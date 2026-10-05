@@ -268,9 +268,8 @@
   // iPad/phone browsers resize the viewport while their address bar slides in and out;
   // don't re-measure every scene for that, it's what threw pinned sections off on iPad
   ScrollTrigger.config({ ignoreMobileResize: true });
-  // pinned scenes only where they're reliable: wide screens driven by a mouse or trackpad
+  // the sideways case-file slider only where it's comfortable: wide screens with a mouse or trackpad
   const PIN_OK = '(min-width: 1025px) and (hover: hover) and (pointer: fine)';
-  const NO_PIN = '(max-width: 1024px), (hover: none), (pointer: coarse)';
 
   // statement: words light up as it scrolls through
   const stmt = document.getElementById('statement');
@@ -285,45 +284,26 @@
     },
   });
 
-  // experience (laptop/desktop): while scrolling, cards stack like a deck; at the end the
-  // deck spreads back out into the full list so every card stays visible afterwards
+  // experience (every device): while scrolling, cards stack like a deck; at the end the deck
+  // spreads back out into the full list so every card stays visible afterwards.
+  // Phones get a smaller gap and start a little higher.
   const stack = document.querySelector('.stack');
   const cards = [...stack.querySelectorAll('.stack__card')];
-  const expMM = gsap.matchMedia();
-  expMM.add(PIN_OK, () => {
-    const top = (c) => c.offsetTop - cards[0].offsetTop;          // natural position in the list
-    const stacked = (c, i) => -top(c) + i * 24;                    // position when stacked on card 1
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: stack, start: 'top 90px', end: () => '+=' + innerHeight * (cards.length * 0.75),
-        pin: true, scrub: 0.6, invalidateOnRefresh: true, anticipatePin: 1,
-      },
-    });
-    cards.forEach((card, i) => {
-      if (i === 0) return;
-      tl.fromTo(card, { y: () => stacked(card, i) + innerHeight }, { y: () => stacked(card, i), ease: 'power2.out', duration: 1 }, i - 1);
-      tl.to(cards.slice(0, i), { scale: (k) => 1 - (i - k) * 0.035, transformOrigin: '50% 0%', ease: 'none', duration: 1 }, i - 1);
-    });
-    tl.to(cards, { y: 0, scale: 1, ease: 'power2.inOut', duration: 1.4, stagger: 0.08 }, '+=0.35');
-    return () => gsap.set(cards, { clearProps: 'transform' });
+  const small = () => innerWidth < 761;
+  const top = (c) => c.offsetTop - cards[0].offsetTop;                    // natural position in the list
+  const stacked = (c, i) => -top(c) + i * (small() ? 14 : 24);             // position when stacked on card 1
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: stack, start: () => `top ${small() ? 70 : 90}px`, end: () => '+=' + innerHeight * (cards.length * 0.75),
+      pin: true, scrub: 0.6, invalidateOnRefresh: true, anticipatePin: 1,
+    },
   });
-  // experience (iPad, tablets, phones): nothing pinned — each card is "dealt" onto the deck as it
-  // scrolls in, rising with a slight tilt while the card above dips back
-  expMM.add(NO_PIN, () => {
-    stack.style.perspective = '1400px';
-    const tweens = [];
-    cards.forEach((card, i) => {
-      tweens.push(gsap.fromTo(card,
-        { y: 110, rotateX: 12, scale: 0.95, transformOrigin: '50% 0%' },
-        { y: 0, rotateX: 0, scale: 1, ease: 'power2.out',
-          scrollTrigger: { trigger: card, start: 'top 98%', end: 'top 62%', scrub: 0.5 } }));
-      if (i > 0) {
-        tweens.push(gsap.fromTo(cards[i - 1], { '--dip': 0 }, { '--dip': 1, ease: 'none',
-          scrollTrigger: { trigger: card, start: 'top 98%', end: 'top 62%', scrub: 0.5 } }));
-      }
-    });
-    return () => { tweens.forEach((t) => t.kill()); gsap.set(cards, { clearProps: 'transform' }); stack.style.perspective = ''; };
+  cards.forEach((card, i) => {
+    if (i === 0) return;
+    tl.fromTo(card, { y: () => stacked(card, i) + innerHeight }, { y: () => stacked(card, i), ease: 'power2.out', duration: 1 }, i - 1);
+    tl.to(cards.slice(0, i), { scale: (k) => 1 - (i - k) * 0.035, transformOrigin: '50% 0%', ease: 'none', duration: 1 }, i - 1);
   });
+  tl.to(cards, { y: 0, scale: 1, ease: 'power2.inOut', duration: 1.4, stagger: 0.08 }, '+=0.35');
 
   // case files: pinned, slide sideways while scrolling down (desktop only)
   const cases = document.getElementById('cases');
