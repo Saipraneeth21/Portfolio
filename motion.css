@@ -12,7 +12,7 @@
 .motion:not(.is-split) .backpage__line { opacity: 0; }
 
 /* ───────── letters and words ───────── */
-.motion .char { display: inline-block; will-change: transform; }
+.motion .char { display: inline-block; }
 .motion .word { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 .08em .22em 0; margin: 0 -.08em -.22em 0; }
 .motion .word__in { display: inline-block; transform: translateY(110%); transition: transform .95s var(--ease); transition-delay: calc(var(--i) * 45ms + var(--d, 0ms)); }
 
@@ -28,7 +28,7 @@
 .motion .dateline > span { opacity: 0; transform: translateY(6px); transition: opacity .6s, transform .6s var(--ease); transition-delay: calc(var(--i, 0) * 90ms + .5s); }
 .motion.is-loaded .dateline > span { opacity: 1; transform: none; }
 
-.motion .masthead__first, .motion .masthead__last { overflow: hidden; padding: 0 .12em .24em 0; margin-bottom: -.18em; will-change: translate; }
+.motion .masthead__first, .motion .masthead__last { overflow: hidden; padding: 0 .12em .24em 0; margin-bottom: -.18em; }
 .motion .masthead .char { transform: translateY(108%) rotate(7deg); transform-origin: 0 100%; transition: transform 1.05s var(--ease); transition-delay: calc(var(--i) * 38ms + var(--d, 0ms)); }
 .motion .masthead__last .char { --d: 380ms; }
 .motion.is-loaded .masthead .char { transform: none; }
@@ -87,7 +87,7 @@
 
 /* photos: slide out of the tray, then develop; gentle parallax inside the frame */
 .imgwrap { display: block; overflow: hidden; }
-.motion .imgwrap img { scale: 1.14; will-change: translate; }
+.motion .imgwrap img { scale: 1.14; }
 .plate:nth-child(6) .imgwrap { flex: 1; min-height: 0; display: flex; }
 .plate:nth-child(6) .imgwrap img { height: 100%; }
 .motion .plate .imgwrap { clip-path: inset(0 0 100% 0); transition: clip-path 1.3s var(--ease); transition-delay: calc(var(--i, 0) * 110ms); }
@@ -134,4 +134,9 @@
 
 @media (max-width: 640px) {
   .ticker { padding: 12px 0; }
+}
+
+/* phones & tablets: no parallax, so photos don't need the extra zoom */
+@media (max-width: 1024px), (hover: none), (pointer: coarse) {
+  .motion .imgwrap img { scale: 1; }
 }

@@ -67,6 +67,15 @@
 
   // ───────── doodle: fully interactive ─────────
   const doodle = document.getElementById('doodle');
+  const liteDevice = matchMedia('(max-width: 1024px), (hover: none), (pointer: coarse)').matches;
+  // the "boiling line" filter redraws the whole drawing constantly — too heavy for phones/tablets
+  if (liteDevice) doodle.querySelector('.doodle__char').removeAttribute('filter');
+  // pause all of the doodle's animations while the home screen is off screen
+  const doodleSvg = doodle.querySelector('svg');
+  new IntersectionObserver(([e]) => {
+    doodle.classList.toggle('is-offscreen', !e.isIntersecting);
+    if (e.isIntersecting) doodleSvg.unpauseAnimations(); else doodleSvg.pauseAnimations();
+  }).observe(doodle);
   const fitDoodle = () => {
     const sub = hero.querySelector('.subline'), foot = hero.querySelector('.hero__foot');
     if (innerWidth > 760) hero.style.setProperty('--doodle-bottom', `${sub.offsetHeight + foot.offsetHeight + 24}px`);
@@ -352,12 +361,20 @@
     scrollTrigger: { trigger: '#bigline', start: 'top bottom', end: 'bottom top', scrub: true },
   });
 
-  // logo rails stream in opposite directions, faster with scroll speed
+  // logo rails stream in opposite directions, faster with scroll speed — only while on screen,
+  // and with their loop width measured once (not every frame)
+  let railVisible = false;
+  new IntersectionObserver(([e]) => { railVisible = e.isIntersecting; }, { rootMargin: '100px 0px' }).observe(rail);
+  let railLoops = rows.map((row) => row.scrollWidth / 4);
+  const measureRails = () => { railLoops = rows.map((row) => row.scrollWidth / 4); };
+  addEventListener('resize', measureRails);
+  if (document.fonts) document.fonts.ready.then(measureRails);
   gsap.ticker.add(() => {
+    if (!railVisible) return;
     const v = lenis ? Math.abs(lenis.velocity || 0) : 0;
     const speed = 0.5 + Math.min(v * 0.25, 10);
     rows.forEach((row, r) => {
-      const loop = row.scrollWidth / 4;
+      const loop = railLoops[r];
       railX[r] += r === 0 ? -speed : speed;
       if (railX[r] <= -loop) railX[r] += loop;
       if (railX[r] >= 0) railX[r] -= loop;

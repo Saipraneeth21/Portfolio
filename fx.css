@@ -203,3 +203,11 @@ html.lenis, html.lenis body { height: auto; }
   .stack .brief .brief__date { grid-column: 1; grid-row: auto; }
   .stack .brief h3, .stack .brief .brief__org, .stack .brief .ticks { grid-column: 1; }
 }
+
+/* ───────── performance ───────── */
+/* pause the doodle's looping animations while the home screen is off screen */
+.doodle.is-offscreen * { animation-play-state: paused !important; }
+/* phones & tablets: drop the costly blur behind the home-screen strip */
+@media (max-width: 1024px), (hover: none), (pointer: coarse) {
+  .hero .subline { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--paper); }
+}

@@ -100,7 +100,15 @@
   addEventListener('resize', () => { loopWidth = track.scrollWidth / 2; });
   if (document.fonts) document.fonts.ready.then(() => { loopWidth = track.scrollWidth / 2; });
 
-  let lastY = scrollY, velocity = 0, lastTime = performance.now();
+  // phones/tablets: skip the photo parallax and name drift (costly there, barely visible)
+  const lite = matchMedia('(max-width: 1024px), (hover: none), (pointer: coarse)').matches;
+  // only work on things that are on screen
+  const onScreen = new Set();
+  const vis = new IntersectionObserver((entries) => entries.forEach((e) => (e.isIntersecting ? onScreen.add(e.target) : onScreen.delete(e.target))), { rootMargin: '120px 0px' });
+  parallax.forEach((img) => vis.observe(img.parentElement));
+  vis.observe(track.parentElement);
+
+  let lastY = scrollY, velocity = 0, lastTime = performance.now(), firstFrame = true;
   const frame = (now) => {
     const y = scrollY;
     const dt = Math.min(now - lastTime, 64) || 16;
@@ -115,21 +123,28 @@
       else if (dy < -4 || y < 240) topbar.classList.remove('is-tucked');
     }
 
-    // name drifts apart as the front page scrolls away
-    if (y < innerHeight * 1.5) {
-      first.style.translate = `${-y * 0.12}px 0`;
-      last.style.translate = `${y * 0.12}px 0`;
+    const scrolled = dy !== 0 || firstFrame;
+    firstFrame = false;
+    if (!lite && scrolled) {
+      // read every position first, then write (reading after writing forces extra layout work)
+      const reads = [];
+      parallax.forEach((img) => {
+        if (onScreen.has(img.parentElement)) reads.push([img, img.parentElement.getBoundingClientRect()]);
+      });
+      // name drifts apart as the front page scrolls away
+      if (y < innerHeight * 1.5) {
+        first.style.translate = `${-y * 0.12}px 0`;
+        last.style.translate = `${y * 0.12}px 0`;
+      }
+      // photos move a little slower than the page
+      reads.forEach(([img, r]) => {
+        const offset = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
+        img.style.translate = `0 ${offset * -7}%`;
+      });
     }
 
-    // photos move a little slower than the page
-    parallax.forEach((img) => {
-      const r = img.parentElement.getBoundingClientRect();
-      if (r.bottom < -100 || r.top > innerHeight + 100) return;
-      const offset = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
-      img.style.translate = `0 ${offset * -7}%`;
-    });
-
-    // ticker: steady drift, pushed faster (and leaning) by scroll speed
+    // ticker: steady drift, pushed faster (and leaning) by scroll speed — only while visible
+    if (!onScreen.has(track.parentElement)) { requestAnimationFrame(frame); return; }
     const dir = velocity < -0.5 ? -1 : 1;
     tickerX -= (0.6 + Math.min(Math.abs(velocity) * 0.35, 12)) * dir;
     if (tickerX <= -loopWidth) tickerX += loopWidth;
