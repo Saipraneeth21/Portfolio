@@ -9,7 +9,6 @@ import { spawnSync } from 'node:child_process';
 // Local files that are referenced on purpose but not in the repo yet.
 // Remove an entry here as soon as the file is added.
 const PENDING = new Set([
-  'assets/Sai_Praneeth_Resume.pdf', // TODO: add the résumé PDF, then delete this line
 ]);
 
 const errors = [];
