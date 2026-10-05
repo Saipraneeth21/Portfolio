@@ -211,3 +211,6 @@ html.lenis, html.lenis body { height: auto; }
 @media (max-width: 1024px), (hover: none), (pointer: coarse) {
   .hero .subline { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--paper); }
 }
+
+/* phones & tablets: native sticky stacking for the experience cards (see fx.js) */
+.stack--sticky .stack__card { position: sticky; top: var(--stick, 64px); scale: calc(1 - var(--dip, 0) * .03); transform-origin: 50% 0; }

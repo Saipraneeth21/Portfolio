@@ -277,8 +277,9 @@
   // iPad/phone browsers resize the viewport while their address bar slides in and out;
   // don't re-measure every scene for that, it's what threw pinned sections off on iPad
   ScrollTrigger.config({ ignoreMobileResize: true });
-  // the sideways case-file slider only where it's comfortable: wide screens with a mouse or trackpad
+  // pinned scenes only on wide screens with a mouse or trackpad; touch devices get native alternatives
   const PIN_OK = '(min-width: 1025px) and (hover: hover) and (pointer: fine)';
+  const NO_PIN = '(max-width: 1024px), (hover: none), (pointer: coarse)';
 
   // statement: words light up as it scrolls through
   const stmt = document.getElementById('statement');
@@ -293,26 +294,57 @@
     },
   });
 
-  // experience (every device): while scrolling, cards stack like a deck; at the end the deck
-  // spreads back out into the full list so every card stays visible afterwards.
-  // Phones get a smaller gap and start a little higher.
   const stack = document.querySelector('.stack');
   const cards = [...stack.querySelectorAll('.stack__card')];
-  const small = () => innerWidth < 761;
-  const top = (c) => c.offsetTop - cards[0].offsetTop;                    // natural position in the list
-  const stacked = (c, i) => -top(c) + i * (small() ? 14 : 24);             // position when stacked on card 1
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: stack, start: () => `top ${small() ? 70 : 90}px`, end: () => '+=' + innerHeight * (cards.length * 0.75),
-      pin: true, scrub: 0.6, invalidateOnRefresh: true, anticipatePin: 1,
-    },
+  const expMM = gsap.matchMedia();
+
+  // experience on laptops/desktops: the section pins, cards stack like a deck,
+  // then the deck spreads back out into the full list
+  expMM.add(PIN_OK, () => {
+    const top = (c) => c.offsetTop - cards[0].offsetTop;          // natural position in the list
+    const stacked = (c, i) => -top(c) + i * 24;                    // position when stacked on card 1
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: stack, start: 'top 90px', end: () => '+=' + innerHeight * (cards.length * 0.75),
+        pin: true, scrub: 0.6, invalidateOnRefresh: true, anticipatePin: 1,
+      },
+    });
+    cards.forEach((card, i) => {
+      if (i === 0) return;
+      tl.fromTo(card, { y: () => stacked(card, i) + innerHeight }, { y: () => stacked(card, i), ease: 'power2.out', duration: 1 }, i - 1);
+      tl.to(cards.slice(0, i), { scale: (k) => 1 - (i - k) * 0.035, transformOrigin: '50% 0%', ease: 'none', duration: 1 }, i - 1);
+    });
+    tl.to(cards, { y: 0, scale: 1, ease: 'power2.inOut', duration: 1.4, stagger: 0.08 }, '+=0.35');
+    return () => gsap.set(cards, { clearProps: 'transform' });
   });
-  cards.forEach((card, i) => {
-    if (i === 0) return;
-    tl.fromTo(card, { y: () => stacked(card, i) + innerHeight }, { y: () => stacked(card, i), ease: 'power2.out', duration: 1 }, i - 1);
-    tl.to(cards.slice(0, i), { scale: (k) => 1 - (i - k) * 0.035, transformOrigin: '50% 0%', ease: 'none', duration: 1 }, i - 1);
+
+  // experience on phones/tablets: native CSS sticky stacking. The browser does the pinning,
+  // so cards can never drift out of the section on real devices. A card taller than the
+  // screen only sticks once its bottom is in view, so every line is readable before the next
+  // card slides over it. The covered card dims slightly.
+  expMM.add(NO_PIN, () => {
+    stack.classList.add('stack--sticky');
+    const setTops = () => {
+      const base = innerWidth < 761 ? 64 : 80;
+      cards.forEach((card, i) => {
+        const fit = innerHeight - card.offsetHeight - 16;           // negative when the card is taller than the screen
+        card.style.setProperty('--stick', `${Math.min(base + i * 12, fit)}px`);
+      });
+    };
+    setTops();
+    addEventListener('resize', setTops);
+    if (document.fonts) document.fonts.ready.then(setTops);
+    const dims = cards.slice(1).map((card, i) => gsap.fromTo(cards[i], { '--dip': 0 }, {
+      '--dip': 1, ease: 'none',
+      scrollTrigger: { trigger: card, start: 'top bottom', end: 'top 30%', scrub: true },
+    }));
+    return () => {
+      dims.forEach((t) => t.kill());
+      removeEventListener('resize', setTops);
+      stack.classList.remove('stack--sticky');
+      cards.forEach((c) => c.style.removeProperty('--stick'));
+    };
   });
-  tl.to(cards, { y: 0, scale: 1, ease: 'power2.inOut', duration: 1.4, stagger: 0.08 }, '+=0.35');
 
   // case files: pinned, slide sideways while scrolling down (desktop only)
   const cases = document.getElementById('cases');
