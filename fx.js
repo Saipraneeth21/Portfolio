@@ -12,13 +12,10 @@
 
   // ───────── loader: the name in English, Telugu and Hindi while the page loads,
   // ends on English, then the curtains split ─────────
-  const NAMES = [
-    ['en', 'English', 'Nagamalli Sai Praneeth'],
-    ['te', 'Telugu', 'నాగమల్లి సాయి ప్రణీత్'],
-    ['hi', 'Hindi', 'नागमल्ली साई प्रणीत'],
-  ];
-  const nameEl = document.getElementById('loaderName');
-  const langEl = document.getElementById('loaderLang');
+  // All three names are already in the page (stacked, invisible), so their fonts are ready
+  // before the animation starts; switching is a pure opacity/transform cross-fade.
+  const names = [...document.querySelectorAll('#loaderNames .loader__hello')];
+  const langs = [...document.querySelectorAll('#loaderLangs .loader__lang')];
   const barEl = document.getElementById('loaderBar');
   let pageLoaded = document.readyState === 'complete';
   addEventListener('load', () => { pageLoaded = true; });
@@ -30,27 +27,34 @@
     dispatchEvent(new Event('loader:done'));
     setTimeout(() => loader.remove(), 1500);
   };
-  const STEP = 550;                       // ms each language stays on screen
-  const steps = NAMES.length + 1;         // every language once, then back to English
-  let step = 0;
-  const show = ([lang, label, text]) => {
-    nameEl.classList.remove('is-in');
-    void nameEl.offsetWidth;              // restart the fade-in
-    nameEl.lang = lang;
-    nameEl.textContent = text;
-    langEl.textContent = label;
-    nameEl.classList.add('is-in');
+  const STEP = 650;                        // ms each language stays on screen
+  const steps = names.length + 1;          // every language once, then back to English
+  let current = -1, step = 0;
+  const show = (i) => {
+    if (current > -1) {
+      names[current].classList.replace('is-on', 'is-out');
+      langs[current].classList.remove('is-on');
+      const prev = names[current];
+      setTimeout(() => prev.classList.remove('is-out'), 600);
+    }
+    names[i].classList.remove('is-out');
+    names[i].classList.add('is-on');
+    langs[i].classList.add('is-on');
+    current = i;
   };
   const tick = () => {
     step++;
     barEl.style.transform = `scaleX(${Math.min(step / steps, 1)})`;
-    if (step < NAMES.length) { show(NAMES[step]); setTimeout(tick, STEP); return; }
-    if (!pageLoaded) { show(NAMES[step % NAMES.length]); setTimeout(tick, STEP); return; } // keep cycling until loaded
-    show(NAMES[0]);                       // land on English
-    setTimeout(finishLoader, 650);
+    if (step < names.length) { show(step); setTimeout(tick, STEP); return; }
+    if (!pageLoaded) { show(step % names.length); setTimeout(tick, STEP); return; } // keep cycling until loaded
+    show(0);                               // land on English
+    setTimeout(finishLoader, 750);
   };
-  nameEl.classList.add('is-in');
-  setTimeout(tick, STEP + 200);
+  // wait (briefly) for the heading font so the first name doesn't jump when it swaps in
+  const fontReady = document.fonts ? document.fonts.load('700 64px Fraunces') : Promise.resolve();
+  Promise.race([fontReady, new Promise((r) => setTimeout(r, 700))]).then(() => {
+    requestAnimationFrame(() => { show(0); setTimeout(tick, STEP); });
+  });
   const afterLoader = (fn) => (root.classList.contains('loader-done') ? fn() : addEventListener('loader:done', fn, { once: true }));
 
   // ───────── smooth scroll ─────────
