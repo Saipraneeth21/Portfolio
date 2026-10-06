@@ -10,31 +10,47 @@
   if (!motion) { loader.remove(); return; }
   root.classList.add('fx');
 
-  // ───────── loader: counts 000 → 100 while the page loads, then the curtains split ─────────
-  const countEl = document.getElementById('loaderCount');
+  // ───────── loader: the name in English, Telugu and Hindi while the page loads,
+  // ends on English, then the curtains split ─────────
+  const NAMES = [
+    ['en', 'English', 'Nagamalli Sai Praneeth'],
+    ['te', 'Telugu', 'నాగమల్లి సాయి ప్రణీత్'],
+    ['hi', 'Hindi', 'नागमल्ली साई प्रणीत'],
+  ];
+  const nameEl = document.getElementById('loaderName');
+  const langEl = document.getElementById('loaderLang');
   const barEl = document.getElementById('loaderBar');
   let pageLoaded = document.readyState === 'complete';
   addEventListener('load', () => { pageLoaded = true; });
   setTimeout(() => { pageLoaded = true; }, 4500); // never wait longer than this
   root.style.overflow = 'hidden';
-  const t0 = performance.now();
-  let shown = 0;
   const finishLoader = () => {
     root.style.overflow = '';
     root.classList.add('loader-done');
     dispatchEvent(new Event('loader:done'));
     setTimeout(() => loader.remove(), 1500);
   };
-  const countUp = (now) => {
-    const target = Math.min((now - t0) / 1700, pageLoaded ? 1 : 0.9);
-    shown += (target - shown) * 0.12;
-    if (target === 1 && shown > 0.995) shown = 1;
-    countEl.textContent = String(Math.round(shown * 100)).padStart(3, '0');
-    barEl.style.transform = `scaleX(${shown})`;
-    if (shown >= 1) { setTimeout(finishLoader, 280); return; }
-    requestAnimationFrame(countUp);
+  const STEP = 550;                       // ms each language stays on screen
+  const steps = NAMES.length + 1;         // every language once, then back to English
+  let step = 0;
+  const show = ([lang, label, text]) => {
+    nameEl.classList.remove('is-in');
+    void nameEl.offsetWidth;              // restart the fade-in
+    nameEl.lang = lang;
+    nameEl.textContent = text;
+    langEl.textContent = label;
+    nameEl.classList.add('is-in');
   };
-  requestAnimationFrame(countUp);
+  const tick = () => {
+    step++;
+    barEl.style.transform = `scaleX(${Math.min(step / steps, 1)})`;
+    if (step < NAMES.length) { show(NAMES[step]); setTimeout(tick, STEP); return; }
+    if (!pageLoaded) { show(NAMES[step % NAMES.length]); setTimeout(tick, STEP); return; } // keep cycling until loaded
+    show(NAMES[0]);                       // land on English
+    setTimeout(finishLoader, 650);
+  };
+  nameEl.classList.add('is-in');
+  setTimeout(tick, STEP + 200);
   const afterLoader = (fn) => (root.classList.contains('loader-done') ? fn() : addEventListener('loader:done', fn, { once: true }));
 
   // ───────── smooth scroll ─────────
