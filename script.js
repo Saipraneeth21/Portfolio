@@ -102,7 +102,7 @@
 
   // photos develop and blocks rise into place as they scroll into view
   const develop = [...document.querySelectorAll('.develop')];
-  const rise = [...document.querySelectorAll('.profile__text, .job-feature, .brief, .record, .case, .ad, .contact__list')];
+  const rise = [...document.querySelectorAll('.profile__text, .job-feature, .brief, .record, .case, .site, .ad, .contact__list')];
   if (reduced) {
     develop.forEach((el) => el.classList.add('is-developed'));
   } else {
