@@ -10,16 +10,11 @@
   if (!motion) { loader.remove(); return; }
   root.classList.add('fx');
 
-  // ───────── loader: the name in English, Telugu and Hindi while the page loads,
-  // ends on English, then the curtains split ─────────
-  // All three names are already in the page (stacked, invisible), so their fonts are ready
-  // before the animation starts; switching is a pure opacity/transform cross-fade.
-  const names = [...document.querySelectorAll('#loaderNames .loader__hello')];
-  const langs = [...document.querySelectorAll('#loaderLangs .loader__lang')];
+  // ───────── loader ─────────
+  // Quick loader (under 1 second): the name fades in, the bar fills, the curtains open.
+  // It doesn't wait for the whole page to finish loading.
+  const nameEl = document.querySelector('#loaderNames .loader__hello');
   const barEl = document.getElementById('loaderBar');
-  let pageLoaded = document.readyState === 'complete';
-  addEventListener('load', () => { pageLoaded = true; });
-  setTimeout(() => { pageLoaded = true; }, 4500); // never wait longer than this
   root.style.overflow = 'hidden';
   const finishLoader = () => {
     root.style.overflow = '';
@@ -27,34 +22,11 @@
     dispatchEvent(new Event('loader:done'));
     setTimeout(() => loader.remove(), 1500);
   };
-  const STEP = 650;                        // ms each language stays on screen
-  const steps = names.length + 1;          // every language once, then back to English
-  let current = -1, step = 0;
-  const show = (i) => {
-    if (current > -1) {
-      names[current].classList.replace('is-on', 'is-out');
-      langs[current].classList.remove('is-on');
-      const prev = names[current];
-      setTimeout(() => prev.classList.remove('is-out'), 600);
-    }
-    names[i].classList.remove('is-out');
-    names[i].classList.add('is-on');
-    langs[i].classList.add('is-on');
-    current = i;
-  };
-  const tick = () => {
-    step++;
-    barEl.style.transform = `scaleX(${Math.min(step / steps, 1)})`;
-    if (step < names.length) { show(step); setTimeout(tick, STEP); return; }
-    if (!pageLoaded) { show(step % names.length); setTimeout(tick, STEP); return; } // keep cycling until loaded
-    show(0);                               // land on English
-    setTimeout(finishLoader, 750);
-  };
-  // wait (briefly) for the heading font so the first name doesn't jump when it swaps in
-  const fontReady = document.fonts ? document.fonts.load('700 64px Fraunces') : Promise.resolve();
-  Promise.race([fontReady, new Promise((r) => setTimeout(r, 700))]).then(() => {
-    requestAnimationFrame(() => { show(0); setTimeout(tick, STEP); });
+  requestAnimationFrame(() => {
+    nameEl.classList.add('is-on');
+    barEl.style.transform = 'scaleX(1)';
   });
+  setTimeout(finishLoader, 800);
   const afterLoader = (fn) => (root.classList.contains('loader-done') ? fn() : addEventListener('loader:done', fn, { once: true }));
 
   // ───────── smooth scroll ─────────
@@ -256,22 +228,6 @@
       if (!moved) { replay(bit, 'is-spin'); say(bit.dataset.say); }
     });
   });
-
-  // ───────── text scramble on hover ─────────
-  const glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&*/';
-  const scramble = (el) => {
-    if (el.dataset.busy) return;
-    const text = el.dataset.text || (el.dataset.text = el.textContent);
-    el.dataset.busy = '1';
-    let f = 0;
-    const step = () => {
-      el.textContent = [...text].map((c, i) => (c === ' ' || i < f / 2 ? c : glyphs[(Math.random() * glyphs.length) | 0])).join('');
-      if (++f <= text.length * 2) requestAnimationFrame(step);
-      else { el.textContent = text; delete el.dataset.busy; }
-    };
-    step();
-  };
-  document.querySelectorAll('.topbar__links a, .contents span, .button').forEach((el) => el.addEventListener('pointerenter', () => scramble(el)));
 
   // ───────── logo rails (built from the toolbox logos) ─────────
   const rail = document.getElementById('logoRail');

@@ -102,7 +102,7 @@
 
   // photos develop and blocks rise into place as they scroll into view
   const develop = [...document.querySelectorAll('.develop')];
-  const rise = [...document.querySelectorAll('.profile__text, .job-feature, .brief, .record, .case, .site, .ad, .contact__list')];
+  const rise = [...document.querySelectorAll('.profile__text, .job-feature, .brief, .record, .mkt__card, .case, .site, .ad, .contact__list')];
   if (reduced) {
     develop.forEach((el) => el.classList.add('is-developed'));
   } else {
@@ -118,10 +118,13 @@
   }
 
   // "At a glance" numbers count up
+  // the real value is already in the HTML; we only reset to 0 when we're about to animate,
+  // so nobody (search engines, link previews, no-JS) ever sees a stuck "0"
   document.querySelectorAll('[data-count]').forEach((el) => {
     const end = +el.dataset.count;
     const suffix = el.dataset.suffix || '';
-    if (reduced) { el.textContent = end + suffix; return; }
+    if (reduced || !('IntersectionObserver' in window)) return;
+    el.textContent = '0' + suffix;
     const obs = new IntersectionObserver(([e]) => {
       if (!e.isIntersecting) return;
       obs.disconnect();
@@ -132,7 +135,7 @@
         if (p < 1) requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
-    }, { threshold: 0.6 });
+    }, { threshold: 0.1 });
     obs.observe(el);
   });
 

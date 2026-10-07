@@ -402,3 +402,23 @@ a.contact__value:hover { color: var(--accent); }
 .site__visit { font-weight: 600; font-size: 14px; color: var(--accent); }
 .site:hover .site__visit { text-decoration: underline; }
 @media (max-width: 640px) { .sites__grid { grid-template-columns: 1fr; } }
+
+/* ───────── marketing work ───────── */
+.mkt { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.mkt__card { background: var(--card); border: 1px solid var(--rule); padding: clamp(22px, 2.6vw, 34px); display: flex; flex-direction: column; gap: 10px; }
+.mkt__card h3 { margin: 0; font-family: var(--serif); font-weight: 600; font-size: clamp(22px, 2.2vw, 30px); line-height: 1.1; letter-spacing: -.02em; }
+.mkt__card h3 a { text-decoration: none; }
+.mkt__card h3 a:hover { color: var(--accent); }
+.mkt__card p { margin: 0; color: var(--ink-2); font-size: 15.5px; }
+.mkt__card .case__file { margin: 0; }
+.mkt__stat { font-family: var(--serif); font-size: 18px !important; color: var(--ink) !important; }
+.mkt__stat b { font-weight: 800; font-size: 1.6em; color: var(--accent); letter-spacing: -.02em; }
+.mkt__note { font: 400 12.5px var(--mono) !important; color: var(--muted) !important; border-top: 1px solid var(--rule); padding-top: 10px; }
+.mkt__media { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 6px; }
+/* clearly marked placeholders — replace before sharing the site */
+.ph { font: 600 13px var(--mono); color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); padding: 1px 6px; }
+.ph-media { aspect-ratio: 4 / 5; display: grid; place-items: center; text-align: center; padding: 8px; font: 500 11.5px var(--mono); color: var(--accent); border: 1.5px dashed var(--accent); background: color-mix(in srgb, var(--accent) 6%, transparent); }
+@media (max-width: 760px) { .mkt { grid-template-columns: 1fr; } }
+
+/* seven section links: keep the top bar on one line on mid-size screens */
+@media (max-width: 1240px) { .topbar__links { gap: 14px; } .topbar__links a { font-size: 12.5px; } }

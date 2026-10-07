@@ -32,7 +32,7 @@ html.lenis, html.lenis body { height: auto; }
 .loader__lang { font: 500 12px var(--mono); letter-spacing: .24em; text-transform: uppercase; color: #8b8b92; transform: none; transition: opacity .35s ease; }
 .loader__lang.is-on { opacity: 1; }
 .loader__bar { width: min(280px, 60vw); height: 2px; margin: 0 auto; background: rgba(255,255,255,.14); overflow: hidden; }
-.loader__bar span { display: block; height: 100%; background: #fb923c; transform: scaleX(0); transform-origin: 0 50%; transition: transform .3s var(--ease); }
+.loader__bar span { display: block; height: 100%; background: #fb923c; transform: scaleX(0); transform-origin: 0 50%; transition: transform .7s var(--ease); }
 .loader-done .loader { pointer-events: none; }
 .loader-done .loader__inner { opacity: 0; transform: scale(.94); }
 .loader-done .loader__curtain--top { transform: translateY(-101%); transition-delay: .15s; }
@@ -226,3 +226,7 @@ html.lenis, html.lenis body { height: auto; }
 
 /* phones & tablets: native sticky stacking for the experience cards (see fx.js) */
 .stack--sticky .stack__card { position: sticky; top: var(--stick, 64px); scale: calc(1 - var(--dip, 0) * .03); transform-origin: 50% 0; }
+
+/* hero: secondary line under the marketing-first intro */
+.hero__also { margin: -10px 0 20px; font-size: 15px; color: var(--muted); }
+.hero__also strong { color: var(--ink-2); }

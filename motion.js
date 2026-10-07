@@ -1,9 +1,8 @@
-// Motion layer: letter/word reveals, scroll effects, ticker, cursor and magnetic buttons.
+// Motion layer: letter/word reveals, scroll effects and the ticker.
 // Does nothing when the visitor's device asks for reduced motion (html.motion is not set).
 (() => {
   const root = document.documentElement;
   if (!root.classList.contains('motion')) return;
-  const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   // ───────── split headings into letters / words ─────────
   const splitChars = (el, startIndex = 0) => {
@@ -156,45 +155,4 @@
   };
   requestAnimationFrame(frame);
 
-  if (!finePointer) return;
-
-  // ───────── cursor ─────────
-  const dot = document.createElement('div');
-  dot.className = 'cursor';
-  const ring = document.createElement('div');
-  ring.className = 'cursor-ring';
-  ring.innerHTML = '<span>View</span>';
-  document.body.append(dot, ring);
-  let mx = -100, my = -100, rx = -100, ry = -100;
-  addEventListener('pointermove', (e) => {
-    mx = e.clientX; my = e.clientY;
-    dot.style.transform = `translate3d(${mx}px, ${my}px, 0)`;
-    dot.classList.add('is-on'); ring.classList.add('is-on');
-    const t = e.target;
-    const view = t.closest && t.closest('.plate');
-    const link = t.closest && t.closest('a, button');
-    ring.classList.toggle('is-view', !!view);
-    ring.classList.toggle('is-link', !view && !!link);
-  }, { passive: true });
-  document.addEventListener('pointerleave', () => { dot.classList.remove('is-on'); ring.classList.remove('is-on'); });
-  addEventListener('pointerdown', () => ring.classList.add('is-down'));
-  addEventListener('pointerup', () => ring.classList.remove('is-down'));
-  const follow = () => {
-    rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
-    ring.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
-    requestAnimationFrame(follow);
-  };
-  requestAnimationFrame(follow);
-
-  // ───────── magnetic buttons ─────────
-  document.querySelectorAll('.button, .store, .edition, .topbar__resume, .essay__more, .contact__copy').forEach((el) => {
-    el.classList.add('magnetic');
-    el.addEventListener('pointermove', (e) => {
-      const r = el.getBoundingClientRect();
-      const x = (e.clientX - (r.left + r.width / 2)) * 0.25;
-      const y = (e.clientY - (r.top + r.height / 2)) * 0.35;
-      el.style.translate = `${x}px ${y}px`;
-    });
-    el.addEventListener('pointerleave', () => { el.style.translate = ''; });
-  });
 })();
