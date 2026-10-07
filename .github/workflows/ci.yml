@@ -1,10 +1,10 @@
-# CI: runs on every push to main and on every pull request.
+# CI: runs on every push to main or staging, and on every pull request.
 # Netlify (CD) deploys main separately and re-runs scripts/check.mjs before publishing.
 name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, staging]   # staging = preview on GitHub Pages; main = live on Netlify
   pull_request:
 
 concurrency:
